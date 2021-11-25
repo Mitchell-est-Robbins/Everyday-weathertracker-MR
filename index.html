@@ -26,7 +26,8 @@
                 <button type="submit" class="btn btn-primary" id="searchButton">Search</button>
             </form>
 
-            <section class="row">
+            <!-- ======================local -->
+            <section class="row" id="localStorage">
                 <div>
                     <p>This will be the local storage recent searches card</p>
                 </div>
@@ -34,13 +35,22 @@
 
         </sidebar>
         <main class=col-9>
-            <section class="row">
+            <!-- ========================current  -->
+            <section class="row" id="currentWeather">
                 <div>
-                    <p> This will be the current day card</p>
+                    <h2> Currently in:</h2>
+                    <h2 id='cityName'></h2>
+                    <p id='theDate'></p>
+                    <p id='cityTemp'></p>
+                    <p id='cityHumid'></p>
+                    <p id='cityWind'></p>
+                    <p id='cityweather'></p>
+                    <img id='wIcon' src="x" alt="weather icon">
                 </div>
             </section>
 
-            <section class="row">
+            <!-- ======================5day    -->
+            <section class="row" id="fiveDay">
                 <div>
                     <p> This will be the 5day card</p>
                 </div>
