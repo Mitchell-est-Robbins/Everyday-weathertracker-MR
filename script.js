@@ -14,6 +14,11 @@ let humid;
 let wind;
 let wpic;
 let cityw;
+let wIcon= document.querySelector('#wIcon') //thanks for that google...
+
+let longBit;
+let latBit;
+let oneCallURL;
 
 const searchInput = document.querySelector('#locationInputtext')
 const searchbtn= document.querySelector('#searchButton')
@@ -27,80 +32,89 @@ const searchbtn= document.querySelector('#searchButton')
 //make a call to the api with the search button info
 //template taken from inclass 10===================
 // current weather api call===============================================================================
-function getcurrentweather(searchCity) {
+// function getcurrentweather(searchCity) {
    
     
-    const requestUrl = (`https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&units=imperial&appid=${myKey}`)
-    document.querySelector('#cityName').textContent = '';
-    // document.querySelector('#theDate').textContent = '';
+//     const requestUrl = (`https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&units=imperial&appid=${myKey}`)
+//     document.querySelector('#cityName').textContent = '';
+//     // document.querySelector('#theDate').textContent = '';
+//     document.querySelector('#cityTemp').textContent = '';
+//     document.querySelector('#cityHumid').textContent = '';
+//     document.querySelector('#cityWind').textContent = '';
+//     document.querySelector('#cityweather').textContent = '';
+
+    
+//     fetch(requestUrl)
+//         .then(function (response) {
+//             console.log("URL1 in use")
+//             // console.log(response)
+//             return response.json();
+//         })
+//         .then(function (response) {
+// // ------------values from data
+//             console.log(response);
+//             cName=response.name;
+//             // date=
+//             temp=response.main.temp
+//             humid=response.main.humidity
+//             wind=response.wind.speed
+//             cityw=response.weather[0].description
+//             wpic=`https://openweathermap.org/img/w/${response.weather[0].icon}.png`
+            
+// // -----------change values on page
+//         document.querySelector('#cityName').textContent = cName;
+//          // document.querySelector('#theDate').textContent = '';
+//         document.querySelector('#cityTemp').textContent = "Temperature: " +temp+ " F ";
+//         document.querySelector('#cityHumid').textContent = "Humidity: " +humid+ " % ";
+//         document.querySelector('#cityWind').textContent = "Windspeed: " +wind+ " m/ph ";
+//         document.querySelector('#cityweather').textContent = cityw;
+//         wIcon.setAttribute('src', wpic)
+        
+//         // console.log(document.querySelector('wIcon'))
+//         })
+//         .catch(function(err) {
+//             console.error(err);
+//         });
+// }
+
+// =======================ONE CALL=========================
+function getOnecallcurrent(oneCallURL) {
+
+    document.querySelector('#cityName').textContent = cName;
     document.querySelector('#cityTemp').textContent = '';
     document.querySelector('#cityHumid').textContent = '';
     document.querySelector('#cityWind').textContent = '';
     document.querySelector('#cityweather').textContent = '';
-    // document.querySelector('#wIcon').textContent = '';
 
-    
-    fetch(requestUrl)
+
+    fetch(oneCallURL)
         .then(function (response) {
-            console.log(requestUrl, "URL in use")
-            // console.log(response)
+            console.log("URL2 in use");
             return response.json();
         })
         .then(function (response) {
-// ------------values from data
-            console.log(response)
-            cName=response.name;
+
+            // ------------values from data
+
+            console.log(response);
+            cName = response.name;
             // date=
-            temp=response.main.temp
-            humid=response.main.humidity
-            wind=response.wind.speed
-            cityw=response.weather[0].description
-            // wpic=
-// -----------change values
-        document.querySelector('#cityName').textContent = cName;
-         // document.querySelector('#theDate').textContent = '';
-        document.querySelector('#cityTemp').textContent = "Temperature: " +temp+ " F ";
-        document.querySelector('#cityHumid').textContent = "Humidity: " +humid+ " % ";
-        document.querySelector('#cityWind').textContent = "Windspeed: " +wind+ " m/ph ";
-        document.querySelector('#cityweather').textContent = cityw;
-        // document.querySelector('#wIcon').textContent = '';
+            temp = response.current.temp
+            humid = response.current.humidity
+            wind = response.current.wind_speed
+            cityw = response.current.weather[0].description
+            wpic = `https://openweathermap.org/img/w/${response.current.weather[0].icon}.png`
 
-        })
-        .catch(function(err) {
-            console.error(err);
-        });
-        // .then(function (data) {
-        //     //     console.log(data);
-            // -----function for rendering the data
-        //     for (var i = 0; i < data.length; i++) {
-        //         //Creating a h3 element and a p element
-        //         var userName = document.createElement('h3');
-        //         var userUrl = document.createElement('p');
+            // -----------change values on page
 
-        //         //Setting the text of the h3 element and p element.
-        //         userName.textContent = data[i].login;
-        //         userUrl.textContent = data[i].url;
-
-        //         //Appending the dynamically generated html to the div associated with the id="users"
-        //         //Append will attach the element as the bottom most child.
-        //         usersContainer.append(userName);
-        //         usersContainer.append(userUrl);
-        //     }
-        // });
-}
-
-// =======================5 day forcast api call=========================
-function getWeatherForcast(searchCity) {
-
-
-    const requestUrl = (`https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&units=imperial&appid=${myKey}`)
-
-
-    fetch(requestUrl)
-        .then(function (response) {
-            console.log(requestUrl, "URL2 in use")
-            // console.log(response)
-            return response.json();
+            document.querySelector('#cityName').textContent = cName;
+            // document.querySelector('#theDate').textContent = '';
+            document.querySelector('#cityTemp').textContent = "Temperature: " + temp + " F ";
+            document.querySelector('#cityHumid').textContent = "Humidity: " + humid + " % ";
+            document.querySelector('#cityWind').textContent = "Windspeed: " + wind + " m/ph ";
+            document.querySelector('#cityweather').textContent = cityw;
+            wIcon.setAttribute('src', wpic)
+            // console.log('made it');
         })
         .catch(function (err) {
             console.error(err);
@@ -109,6 +123,29 @@ function getWeatherForcast(searchCity) {
 }
 
 
+//============================= get GeoCords=========================================
+function getGeoCords(searchCity){
+const requestUrl2 = (`https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&units=imperial&appid=${myKey}`)
+longBit=''
+latBit=''
+
+
+fetch(requestUrl2)
+.then(function (response) {
+    console.log("getting geo-cords ");
+    return response.json();
+})
+.then(function (response) {
+    console.log(response);
+    longBit= response.coord.lon
+    latBit= response.coord.lat
+    cName=response.name
+    oneCallURL=`https://api.openweathermap.org/data/2.5/onecall?lat=${latBit}&lon=${longBit}&units=imperial&exclude=minutely,hourly&appid=${myKey}`
+    getOnecallcurrent(oneCallURL)
+    
+})
+
+}
 // render response into something that can be used.
 // ==================== render data================================
 
@@ -116,8 +153,9 @@ function getWeatherForcast(searchCity) {
 function handleSearchFormSubmit(e) {
     e.preventDefault();
     var search = searchInput.value.trim();
-    getcurrentweather(search) 
-    getWeatherForcast (search)
+    getGeoCords(search)
+    // getcurrentweather(search) 
+    // getWeatherForcast (search)
 };
 
 searchbtn.addEventListener('click', handleSearchFormSubmit);
