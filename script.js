@@ -14,7 +14,9 @@ let humid;
 let wind;
 let wpic;
 let cityw;
-let wIcon= document.querySelector('#wIcon') //thanks for that google...
+let uvi;
+let wIcon= document.querySelector('#wIcon'); //thanks for that google...
+let uvicolor= document.querySelector('#cityuvi')
 
 let longBit;
 let latBit;
@@ -85,11 +87,15 @@ function getOnecallcurrent(oneCallURL) {
     document.querySelector('#cityHumid').textContent = '';
     document.querySelector('#cityWind').textContent = '';
     document.querySelector('#cityweather').textContent = '';
+    document.querySelector('#cityuvi').textContent = '';
+    document.querySelector('#theDate').textContent = '';
 
 
     fetch(oneCallURL)
+    
         .then(function (response) {
-            console.log("URL2 in use");
+            console.log("onecall in use");
+            console.log(oneCallURL)
             return response.json();
         })
         .then(function (response) {
@@ -97,23 +103,31 @@ function getOnecallcurrent(oneCallURL) {
             // ------------values from data
 
             console.log(response);
-            cName = response.name;
-            // date=
-            temp = response.current.temp
-            humid = response.current.humidity
-            wind = response.current.wind_speed
-            cityw = response.current.weather[0].description
-            wpic = `https://openweathermap.org/img/w/${response.current.weather[0].icon}.png`
-
+            // cName = response.name;
+            date= moment().format("MM/DD/YYYY")
+            temp = response.current.temp;
+            humid = response.current.humidity;
+            wind = response.current.wind_speed;
+            cityw = response.current.weather[0].description;
+            wpic = `https://openweathermap.org/img/w/${response.current.weather[0].icon}.png`;
+            cityuvi= response.current.uvi;
             // -----------change values on page
 
             document.querySelector('#cityName').textContent = cName;
-            // document.querySelector('#theDate').textContent = '';
+            document.querySelector('#theDate').textContent = date;
             document.querySelector('#cityTemp').textContent = "Temperature: " + temp + " F ";
             document.querySelector('#cityHumid').textContent = "Humidity: " + humid + " % ";
             document.querySelector('#cityWind').textContent = "Windspeed: " + wind + " m/ph ";
             document.querySelector('#cityweather').textContent = cityw;
             wIcon.setAttribute('src', wpic)
+            document.querySelector('#cityuvi').textContent = "UVIndex:" + cityuvi;
+
+            // https://en.wikipedia.org/wiki/Ultraviolet_index 
+            if(cityuvi < 3){ uvicolor.style.backgroundColor = "green" }
+            else if ( cityuvi > 3 && cityuvi < 6){ uvicolor.style.backgroundColor = "yellow" }
+            else if ( cityuvi > 6 && cityuvi < 7){ uvicolor.style.backgroundColor = "orange" }
+            else{uvicolor.style.backgroundColor = "red"}
+
             // console.log('made it');
         })
         .catch(function (err) {
@@ -146,8 +160,7 @@ fetch(requestUrl2)
 })
 
 }
-// render response into something that can be used.
-// ==================== render data================================
+
 
 // ===================search btn handler========================================
 function handleSearchFormSubmit(e) {
@@ -161,11 +174,7 @@ function handleSearchFormSubmit(e) {
 searchbtn.addEventListener('click', handleSearchFormSubmit);
 
 
-// <h2 id='cityName'>x</h2>
-// <p id='theDate'>x</p>
-// <p id='cityTemp'>x</p>
-// <p id='cityHumid'>x</p>
-// <p id='cityWind'></p>
+
 
 
 
