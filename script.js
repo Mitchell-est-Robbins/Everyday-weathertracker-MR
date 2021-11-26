@@ -15,6 +15,10 @@ let wind;
 let wpic;
 let cityw;
 let uvi;
+
+let fiveDayApiData;
+let fiveDayArr;
+
 let wIcon= document.querySelector('#wIcon'); //thanks for that google...
 let uvicolor= document.querySelector('#cityuvi')
 
@@ -30,79 +34,32 @@ const searchbtn= document.querySelector('#searchButton')
 
 
 
-
 //make a call to the api with the search button info
-//template taken from inclass 10===================
-// current weather api call===============================================================================
-// function getcurrentweather(searchCity) {
-   
-    
-//     const requestUrl = (`https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&units=imperial&appid=${myKey}`)
-//     document.querySelector('#cityName').textContent = '';
-//     // document.querySelector('#theDate').textContent = '';
-//     document.querySelector('#cityTemp').textContent = '';
-//     document.querySelector('#cityHumid').textContent = '';
-//     document.querySelector('#cityWind').textContent = '';
-//     document.querySelector('#cityweather').textContent = '';
-
-    
-//     fetch(requestUrl)
-//         .then(function (response) {
-//             console.log("URL1 in use")
-//             // console.log(response)
-//             return response.json();
-//         })
-//         .then(function (response) {
-// // ------------values from data
-//             console.log(response);
-//             cName=response.name;
-//             // date=
-//             temp=response.main.temp
-//             humid=response.main.humidity
-//             wind=response.wind.speed
-//             cityw=response.weather[0].description
-//             wpic=`https://openweathermap.org/img/w/${response.weather[0].icon}.png`
-            
-// // -----------change values on page
-//         document.querySelector('#cityName').textContent = cName;
-//          // document.querySelector('#theDate').textContent = '';
-//         document.querySelector('#cityTemp').textContent = "Temperature: " +temp+ " F ";
-//         document.querySelector('#cityHumid').textContent = "Humidity: " +humid+ " % ";
-//         document.querySelector('#cityWind').textContent = "Windspeed: " +wind+ " m/ph ";
-//         document.querySelector('#cityweather').textContent = cityw;
-//         wIcon.setAttribute('src', wpic)
-        
-//         // console.log(document.querySelector('wIcon'))
-//         })
-//         .catch(function(err) {
-//             console.error(err);
-//         });
-// }
 
 // =======================ONE CALL=========================
 function getOnecallcurrent(oneCallURL) {
+//--------clears the block not needed since blocks are already empty
+    // document.querySelector('#cityName').textContent = cName;
+    // document.querySelector('#cityTemp').textContent = '';
+    // document.querySelector('#cityHumid').textContent = '';
+    // document.querySelector('#cityWind').textContent = '';
+    // document.querySelector('#cityweather').textContent = '';
+    // document.querySelector('#cityuvi').textContent = '';
+    // document.querySelector('#theDate').textContent = '';
 
-    document.querySelector('#cityName').textContent = cName;
-    document.querySelector('#cityTemp').textContent = '';
-    document.querySelector('#cityHumid').textContent = '';
-    document.querySelector('#cityWind').textContent = '';
-    document.querySelector('#cityweather').textContent = '';
-    document.querySelector('#cityuvi').textContent = '';
-    document.querySelector('#theDate').textContent = '';
-
+//------------------------makes the call
 
     fetch(oneCallURL)
     
         .then(function (response) {
-            console.log("onecall in use");
-            console.log(oneCallURL)
+            // console.log("onecall in use:" ,oneCallURL);
             return response.json();
         })
         .then(function (response) {
 
             // ------------values from data
 
-            console.log(response);
+            // console.log(response);
             // cName = response.name;
             date= moment().format("MM/DD/YYYY")
             temp = response.current.temp;
@@ -119,8 +76,8 @@ function getOnecallcurrent(oneCallURL) {
             document.querySelector('#cityHumid').textContent = "Humidity: " + humid + " % ";
             document.querySelector('#cityWind').textContent = "Windspeed: " + wind + " m/ph ";
             document.querySelector('#cityweather').textContent = cityw;
-            wIcon.setAttribute('src', wpic)
             document.querySelector('#cityuvi').textContent = "UVIndex:" + cityuvi;
+            wIcon.setAttribute('src', wpic)
 
             // https://en.wikipedia.org/wiki/Ultraviolet_index 
             if(cityuvi < 3){ uvicolor.style.backgroundColor = "green" }
@@ -129,6 +86,78 @@ function getOnecallcurrent(oneCallURL) {
             else{uvicolor.style.backgroundColor = "red"}
 
             // console.log('made it');
+
+
+//-------------same API call now creating the forecast cards
+            let fiveDayApiData = response.daily.slice(1, 6);
+            for (let i = 0; i < fiveDayApiData.length; i++) {
+                let fiveDayArr = fiveDayApiData[i];
+                console.log("FIVE DAY ARRAY: ", fiveDayArr)   
+
+            fdaydate = moment().add(i+1, 'days').format("MM/DD/YYYY");
+            fdaytemp =fiveDayArr.temp.day;
+            fdayhumid =fiveDayArr.humidity;
+            fdaywind= fiveDayArr.wind_speed;
+            fdayuvi= fiveDayArr.uvi;
+            // fdayicon and fdayiconURL make the icon show
+
+            let cardtemplate = document.createElement('div'); //col
+            cardtemplate.setAttribute( 'class', 'col-md');
+            let card = document.createElement('div')
+            card.setAttribute('class', 'card');
+            let cardtext= document.createElement('div')
+            cardtext.setAttribute('class', 'card-body');
+           
+
+            let carddate =document.createElement("h6");
+            let cardtemp =document.createElement("p");
+            let cardhumid =document.createElement("p");
+            let cardwind =document.createElement("p");
+            let carduvi =document.createElement("p");
+            
+            
+            carddate.textContent = fdaydate;
+            cardtemp.textContent = "Temp:" + fdaytemp +" F";
+            cardhumid.textContent=   fdayhumid+" % Humidity ";
+            cardwind.textContent = "Wind: " + fdaywind + "mph";
+            carduvi.textContent = "UVindex:" + fdayuvi;
+
+            if(fdayuvi < 3){ carduvi.style.backgroundColor = "green" }
+            else if ( fdayuvi > 3 && fdayuvi < 6){ carduvi.style.backgroundColor = "yellow" }
+            else if ( fdayuvi > 6 && fdayuvi < 7){ carduvi.style.backgroundColor = "orange" }
+            else{carduvi.style.backgroundColor = "red"}
+            
+            const fivedaycontainer = document.getElementById('fiveDay')
+            cardtemplate.append(card); //create the box
+            card.append(cardtext) //div up the box
+            cardtext.append(carddate, cardtemp, cardhumid, cardwind, carduvi) //put shit in the box
+            fivedaycontainer.append(cardtemplate) //finished boxes added to html
+           
+            // .append(cardtemplate)
+            // document.getElementById('cardtemplate').append(carddate, cardtemp, cardhumid, cardwind)
+            // document.getElementById(1).append(cardtemp)
+            // document.getElementById(1).append(cardhumid)
+            // document.getElementById(1).append(cardwind)
+            
+            
+            // const fdaycard1 = document.querySelector('#card1')
+            // const fdaycard2 = document.querySelector('#card2')
+            // // console.log(fdaycard1)
+            // const fdaytemplate = `
+            // <div>
+            // <h4 >${fdaydate}</h4>
+            // <p >${fdaytemp}</p>
+            // <p >${fdayhumid}</p>
+            // <p >${fdaywind}</p>
+            // </div>
+            // `
+           
+          
+
+        }
+            // A FOR EACH LOOP GOING INTO A TEMPLATE LITERAL LIKE I DID ON HW10
+
+
         })
         .catch(function (err) {
             console.error(err);
