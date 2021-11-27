@@ -2,7 +2,7 @@
 
 
 const myKey = "cb15120a874ba7b3d3c9ff343bd7f119"
-var searchHistory = [];
+// var searchHistory = [];
 
 // global variables for use in the template
 let cName,
@@ -122,6 +122,8 @@ function getOnecallcurrent(oneCallURL) {
             fivedaycontainer.append(cardtemplate) //finished boxes added to html
 
 
+            // I will make this work at a later date
+            // ============================================
             // const fdaycard1 = document.querySelector('#card1')
             // const fdaycard2 = document.querySelector('#card2')
             // // console.log(fdaycard1)
