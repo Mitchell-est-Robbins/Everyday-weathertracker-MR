@@ -2,29 +2,24 @@
 
 
 const myKey = "cb15120a874ba7b3d3c9ff343bd7f119"
-// const urlPrim = (`https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&units=imperial&appid=${myKey}`)
-// const urlSnd =  (`https://api.openweathermap.org/data/2.5/forecast?q=${searchInput}&units=imperial&appid=${myKey}`)
-// const apiRoot = (`https://api.openweathermap.org`)
+var searchHistory = [];
 
 // global variables for use in the template
-let cName;
-let date;
-let temp;
-let humid;
-let wind;
-let wpic;
-let cityw;
-let uvi;
+let cName,
+    date,
+    temp,
+    humid,
+    wind,
+    wpic,
+    cityw,
+    uvi,
+    longBit,
+    latBit,
+    oneCallURL;
 
-let fiveDayApiData;
-let fiveDayArr;
-
+    //special defined ones
 let wIcon= document.querySelector('#wIcon'); //thanks for that google...
 let uvicolor= document.querySelector('#cityuvi')
-
-let longBit;
-let latBit;
-let oneCallURL;
 
 const searchInput = document.querySelector('#locationInputtext')
 const searchbtn= document.querySelector('#searchButton')
@@ -38,15 +33,6 @@ const searchbtn= document.querySelector('#searchButton')
 
 // =======================ONE CALL=========================
 function getOnecallcurrent(oneCallURL) {
-//--------clears the block not needed since blocks are already empty
-    // document.querySelector('#cityName').textContent = cName;
-    // document.querySelector('#cityTemp').textContent = '';
-    // document.querySelector('#cityHumid').textContent = '';
-    // document.querySelector('#cityWind').textContent = '';
-    // document.querySelector('#cityweather').textContent = '';
-    // document.querySelector('#cityuvi').textContent = '';
-    // document.querySelector('#theDate').textContent = '';
-
 //------------------------makes the call
 
     fetch(oneCallURL)
@@ -92,14 +78,14 @@ function getOnecallcurrent(oneCallURL) {
             let fiveDayApiData = response.daily.slice(1, 6);
             for (let i = 0; i < fiveDayApiData.length; i++) {
                 let fiveDayArr = fiveDayApiData[i];
-                console.log("FIVE DAY ARRAY: ", fiveDayArr)   
+                // console.log("FIVE DAY ARRAY: ", fiveDayArr)   
 
             fdaydate = moment().add(i+1, 'days').format("MM/DD/YYYY");
             fdaytemp =fiveDayArr.temp.day;
             fdayhumid =fiveDayArr.humidity;
             fdaywind= fiveDayArr.wind_speed;
             fdayuvi= fiveDayArr.uvi;
-            // fdayicon and fdayiconURL make the icon show
+            fdayiconurl =`https://openweathermap.org/img/w/${fiveDayArr.weather[0].icon}.png`;
 
             let cardtemplate = document.createElement('div'); //col
             cardtemplate.setAttribute( 'class', 'col-md');
@@ -107,20 +93,22 @@ function getOnecallcurrent(oneCallURL) {
             card.setAttribute('class', 'card');
             let cardtext= document.createElement('div')
             cardtext.setAttribute('class', 'card-body');
-           
+            
 
             let carddate =document.createElement("h6");
             let cardtemp =document.createElement("p");
             let cardhumid =document.createElement("p");
             let cardwind =document.createElement("p");
             let carduvi =document.createElement("p");
-            
+            let cardicon = document.createElement ("img")
+
             
             carddate.textContent = fdaydate;
             cardtemp.textContent = "Temp:" + fdaytemp +" F";
             cardhumid.textContent=   fdayhumid+" % Humidity ";
             cardwind.textContent = "Wind: " + fdaywind + "mph";
             carduvi.textContent = "UVindex:" + fdayuvi;
+            cardicon.setAttribute('src', fdayiconurl)
 
             if(fdayuvi < 3){ carduvi.style.backgroundColor = "green" }
             else if ( fdayuvi > 3 && fdayuvi < 6){ carduvi.style.backgroundColor = "yellow" }
@@ -130,16 +118,10 @@ function getOnecallcurrent(oneCallURL) {
             const fivedaycontainer = document.getElementById('fiveDay')
             cardtemplate.append(card); //create the box
             card.append(cardtext) //div up the box
-            cardtext.append(carddate, cardtemp, cardhumid, cardwind, carduvi) //put shit in the box
+            cardtext.append(carddate, cardtemp, cardhumid, cardwind, carduvi, cardicon) //put shit in the box
             fivedaycontainer.append(cardtemplate) //finished boxes added to html
-           
-            // .append(cardtemplate)
-            // document.getElementById('cardtemplate').append(carddate, cardtemp, cardhumid, cardwind)
-            // document.getElementById(1).append(cardtemp)
-            // document.getElementById(1).append(cardhumid)
-            // document.getElementById(1).append(cardwind)
-            
-            
+
+
             // const fdaycard1 = document.querySelector('#card1')
             // const fdaycard2 = document.querySelector('#card2')
             // // console.log(fdaycard1)
@@ -151,11 +133,9 @@ function getOnecallcurrent(oneCallURL) {
             // <p >${fdaywind}</p>
             // </div>
             // `
-           
-          
+
 
         }
-            // A FOR EACH LOOP GOING INTO A TEMPLATE LITERAL LIKE I DID ON HW10
 
 
         })
